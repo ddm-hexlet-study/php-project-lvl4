@@ -1,0 +1,39 @@
+name: main Workflow
+on: [push]
+jobs:
+ main:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Check out repository code
+          uses: actions/checkout@v2
+        - name: install dependencies
+          uses: shivammathur/setup-php@v2
+          with:
+                php-version: '8.1'
+                coverage: xdebug
+                tools: phpcs, phpunit
+        - name: install
+          run: make install
+        - name: Create temporary sqlite database
+          run: |
+            mkdir -p database
+            touch database/database.sqlite
+        - name: Run laravel database migrations
+          env:
+            DB_CONNECTION: sqlite
+            DB_DATABASE: database/database.sqlite
+          run: php artisan migrate --force
+        - name: Install NPM dependencies
+          run: npm install
+        - name: Linter Test
+          run: make lint
+        - name: PhpUnit Test
+          run: make test
+        - name: Run test & publish code coverage
+          uses: paambaati/codeclimate-action@v2.6.0
+          env:
+            CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_PROJECT3 }}
+          with:
+            coverageCommand: make test-coverage
+            coverageLocations: ${{github.workplace}}/build/logs/clover.xml:clover
+            debug: true
