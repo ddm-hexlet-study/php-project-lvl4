@@ -52,8 +52,8 @@
                     {{ $task->name }}
                 </a>
             </td>
-            <td>{{ $task->created_by->name }}</td>
-            <td>{{ optional($task->assigned_to)->name }}</td>
+            <td>{{ $task->createdBy->name }}</td>
+            <td>{{ optional($task->assignedTo)->name }}</td>
             <td>{{ $task->created_at->format('d.m.Y') }}</td>
             <td>
                 @if (Auth::check())

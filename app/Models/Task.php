@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     use HasFactory;
+
     protected $fillable = ['name', 'description', 'status_id', 'assigned_to_id'];
 
     public function status()
@@ -15,12 +16,12 @@ class Task extends Model
         return $this->belongsTo(TaskStatus::class);
     }
 
-    public function created_by()
+    public function createdBy()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function assigned_to()
+    public function assignedTo()
     {
         return $this->belongsTo(User::class);
     }

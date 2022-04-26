@@ -39,8 +39,7 @@ class LabelControllerTest extends TestCase
     public function testStoreLoggedIn()
     {
         $name = $this->faker->lexify();
-
-        $response = $this->actingAs($this->user)->post(route('labels.store', compact('name',)));
+        $response = $this->actingAs($this->user)->post(route('labels.store', compact('name')));
         $response->assertRedirect(route('labels.index'));
         $this->assertDatabaseHas('labels', ['name' => $name]);
     }
@@ -48,7 +47,7 @@ class LabelControllerTest extends TestCase
     public function testStoreLoggedOut()
     {
         $name = $this->faker->lexify();
-        $response = $this->post(route('labels.store', compact('name', )));
+        $response = $this->post(route('labels.store', compact('name')));
         $response->assertStatus(403);
         $this->assertDatabaseMissing('labels', ['name' => $name]);
     }

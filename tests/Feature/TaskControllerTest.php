@@ -19,7 +19,7 @@ class TaskControllerTest extends TestCase
         $this->user = User::factory()->create();
         $this->status = TaskStatus::factory()->create();
         $this->task = Task::factory()
-            ->for($this->user, 'created_by')
+            ->for($this->user, 'createdBy')
                 ->for($this->status, 'status')->create();
     }
 
@@ -49,8 +49,7 @@ class TaskControllerTest extends TestCase
         $response = $this->actingAs($this->user)->post(route('tasks.store', compact('name', 'status_id')));
         $response->assertRedirect(route('tasks.index'));
         $this->assertDatabaseHas('tasks', ['name' => $name]);
-
-        $response = $this->actingAs($this->user)->post(route('tasks.store', compact( 'status_id')));
+        $response = $this->actingAs($this->user)->post(route('tasks.store', compact('status_id')));
         $response->assertRedirect(route('tasks.create'));
     }
 
