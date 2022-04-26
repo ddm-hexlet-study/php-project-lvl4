@@ -62,24 +62,31 @@ class TaskStatusControllerTest extends TestCase
 
     public function testUpdateLoggedIn()
     {
-        $updatedTaskName = $this->faker->lexify();
-        $response = $this->actingAs($this->user)->patch(route('task_statuses.update', ['name' => $updatedTaskName, 'task_status' => $this->taskId]));
+        $params = [
+            'name' => $this->faker->lexify(),
+            'task_status' => $this->taskId
+        ];
+        $response = $this->actingAs($this->user)->patch(route('task_statuses.update', $params));
         $response->assertRedirect(route('task_statuses.index'));
-        $this->assertDatabaseHas('task_statuses', ['name' => $updatedTaskName]);
+        $this->assertDatabaseHas('task_statuses', ['name' => $params['name']]);
         $this->assertDatabaseMissing('task_statuses', ['name' => $this->taskName]);
     }
 
     public function testUpdateLoggedOut()
     {
-        $updatedTaskName = $this->faker->lexify();
-        $response = $this->patch(route('task_statuses.update', ['name' => $updatedTaskName, 'task_status' => $this->taskId]));
+        $params = [
+            'name' => $this->faker->lexify(),
+            'task_status' => $this->taskId
+        ];
+        $response = $this->patch(route('task_statuses.update', $params));
         $response->assertStatus(403);
-        $this->assertDatabaseMissing('task_statuses', ['name' => $updatedTaskName]);
+        $this->assertDatabaseMissing('task_statuses', ['name' => $params['name']]);
     }
 
     public function testDestroyLoggedIn()
     {
-        $response = $this->actingAs($this->user)->delete(route('task_statuses.destroy', ['task_status' => $this->taskId]));
+        $response = $this->actingAs($this->user)
+            ->delete(route('task_statuses.destroy', ['task_status' => $this->taskId]));
         $response->assertRedirect(route('task_statuses.index'));
         $this->assertDatabaseMissing('task_statuses', ['name' => $this->taskName]);
     }
