@@ -43,7 +43,9 @@ class TaskStatusController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
+            'name' => 'required|max:255|unique:task_statuses',
+        ], [
+            'unique' => __('validation.status.unique')
         ]);
         if ($validator->fails()) {
             return redirect()->route('task_statuses.create')

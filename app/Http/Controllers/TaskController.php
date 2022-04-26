@@ -59,8 +59,10 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
+            'name' => 'required|max:255|unique:tasks',
             'status_id' => 'required',
+        ], [
+            'unique' => __('validation.task.unique')
         ]);
         if ($validator->fails()) {
             return redirect()->route('tasks.create')
