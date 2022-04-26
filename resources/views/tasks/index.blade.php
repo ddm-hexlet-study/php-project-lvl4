@@ -54,7 +54,7 @@
             </td>
             <td>{{ $task->created_by->name }}</td>
             <td>{{ optional($task->assigned_to)->name }}</td>
-            <td>{{ $task->created_at }}</td>
+            <td>{{ $task->created_at->format('d.m.Y') }}</td>
             <td>
                 @if (Auth::check())
                     <a class="text-decoration-none" href="{{ route('tasks.edit', $task) }}">Изменить</a>
