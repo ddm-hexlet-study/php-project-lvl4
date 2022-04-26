@@ -61,8 +61,6 @@ class TaskController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'status_id' => 'required',
-        ], [
-            'required' => 'Это обязательное поле',
         ]);
         if ($validator->fails()) {
             return redirect()->route('tasks.create')

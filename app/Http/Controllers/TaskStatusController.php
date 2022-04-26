@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TaskStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TaskStatusController extends Controller
 {
@@ -41,6 +42,13 @@ class TaskStatusController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('task_statuses.create')
+                ->withErrors($validator);
+        }
         $status = new TaskStatus();
         $status->name = $request->input('name');
         $status->created_at = now();
