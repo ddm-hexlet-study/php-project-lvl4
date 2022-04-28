@@ -61,17 +61,6 @@ class LabelController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Label  $label
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Label $label)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Label  $label
@@ -116,7 +105,7 @@ class LabelController extends Controller
     public function destroy(Label $label)
     {
 
-        if (!$label->tasks->isEmpty()) {
+        if ($label->tasks()->first() !== null) {
             flash(__('flash.label.failedRemoved'))->error();
             return redirect()->route('labels.index');
         }
