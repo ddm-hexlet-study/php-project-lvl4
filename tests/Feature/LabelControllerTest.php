@@ -8,8 +8,8 @@ use Tests\TestCase;
 
 class LabelControllerTest extends TestCase
 {
-    private User $user;
-    private Label $label;
+    //private User $user;
+    //private Label $label;
 
     protected function setUp(): void
     {

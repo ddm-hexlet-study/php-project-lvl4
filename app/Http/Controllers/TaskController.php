@@ -71,7 +71,7 @@ class TaskController extends Controller
         $task = new Task();
         $task->fill($request->all());
         $task->created_at = now();
-        $task->created_by_id = Auth::id();
+        $task->created_by_id = (int) Auth::id();
         $task->save();
         if ($request->has('labels')) {
             $task->labels()->attach($request->input('labels'));

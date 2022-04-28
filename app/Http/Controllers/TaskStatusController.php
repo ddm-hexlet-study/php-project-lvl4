@@ -60,17 +60,6 @@ class TaskStatusController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\TaskStatus  $taskStatus
-     * @return \Illuminate\Http\Response
-     */
-    public function show(TaskStatus $taskStatus)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\TaskStatus  $taskStatus
@@ -104,7 +93,7 @@ class TaskStatusController extends Controller
      */
     public function destroy(TaskStatus $taskStatus)
     {
-        if (!$taskStatus->tasks->isEmpty()) {
+        if ($taskStatus->tasks()->first() !== null) {
             flash(__('flash.status.failedRemoved'))->error();
             return redirect()->route('task_statuses.index');
         }
