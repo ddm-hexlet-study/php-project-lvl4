@@ -9,8 +9,8 @@ use Tests\TestCase;
 
 class TaskControllerTest extends TestCase
 {
-    //private User $user;
-    //private Task $task;
+    private User $user;
+    private Task $task;
 
     protected function setUp(): void
     {

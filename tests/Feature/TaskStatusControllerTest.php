@@ -10,9 +10,9 @@ use Tests\TestCase;
 
 class TaskStatusControllerTest extends TestCase
 {
-    //private User $user;
-    //private int $taskId;
-    //private string $taskName;
+    private User $user;
+    private int $taskId;
+    private string $taskName;
 
     protected function setUp(): void
     {
