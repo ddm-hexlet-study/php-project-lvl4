@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 class TaskStatusControllerTest extends TestCase
 {
-    private User $user;
+    private mixed $user;
     private int $taskId;
     private string $taskName;
 

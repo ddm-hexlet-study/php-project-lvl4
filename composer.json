@@ -21,6 +21,7 @@
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^6.1",
+        "phpstan/phpstan": "^1.6",
         "phpunit/phpunit": "^9.5.10",
         "psr/log": "^1.0|^2.0|^3.0",
         "spatie/laravel-ignition": "^1.0",
