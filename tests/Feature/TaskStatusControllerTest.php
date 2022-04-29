@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 class TaskStatusControllerTest extends TestCase
 {
-    private mixed $user;
+    private User $user;
     private int $taskId;
     private string $taskName;
 
@@ -18,13 +18,12 @@ class TaskStatusControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::factory()->create();
-        $this->taskName = $this->faker->lexify();
-        $this->taskId = DB::table('task_statuses')->insertGetId([
-            'id' => 1,
-            'name' => "{$this->taskName}",
-            'created_at' => now()
-        ]);
+        /** @var User $user */
+        $user = User::factory()->create();
+        $this->user = $user;
+        /** @var TaskStatus status */
+        $status = TaskStatus::factory()->create();
+        $this->status = $status;
     }
     public function testIndex()
     {
@@ -64,19 +63,19 @@ class TaskStatusControllerTest extends TestCase
     {
         $params = [
             'name' => $this->faker->lexify(),
-            'task_status' => $this->taskId
+            'task_status' => $this->status
         ];
         $response = $this->actingAs($this->user)->patch(route('task_statuses.update', $params));
         $response->assertRedirect(route('task_statuses.index'));
         $this->assertDatabaseHas('task_statuses', ['name' => $params['name']]);
-        $this->assertDatabaseMissing('task_statuses', ['name' => $this->taskName]);
+        $this->assertDatabaseMissing('task_statuses', ['name' => $this->status->name]);
     }
 
     public function testUpdateLoggedOut()
     {
         $params = [
             'name' => $this->faker->lexify(),
-            'task_status' => $this->taskId
+            'task_status' => $this->status
         ];
         $response = $this->patch(route('task_statuses.update', $params));
         $response->assertStatus(403);
@@ -86,15 +85,15 @@ class TaskStatusControllerTest extends TestCase
     public function testDestroyLoggedIn()
     {
         $response = $this->actingAs($this->user)
-            ->delete(route('task_statuses.destroy', ['task_status' => $this->taskId]));
+            ->delete(route('task_statuses.destroy', ['task_status' => $this->status]));
         $response->assertRedirect(route('task_statuses.index'));
-        $this->assertDatabaseMissing('task_statuses', ['name' => $this->taskName]);
+        $this->assertDatabaseMissing('task_statuses', ['name' => $this->status->name]);
     }
 
     public function testDestroyLoggedOut()
     {
-        $response = $this->delete(route('task_statuses.destroy', ['task_status' => $this->taskId]));
+        $response = $this->delete(route('task_statuses.destroy', ['task_status' => $this->status]));
         $response->assertStatus(403);
-        $this->assertDatabaseHas('task_statuses', ['name' => $this->taskName]);
+        $this->assertDatabaseHas('task_statuses', ['name' => $this->status->name]);
     }
 }
