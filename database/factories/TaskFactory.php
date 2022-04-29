@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\TaskStatus;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,8 +20,8 @@ class TaskFactory extends Factory
     {
         return [
             'name' => $this->faker->lexify(),
-            'created_by_id' => $this->faker->randomDigit(),
-            'status_id' => $this->faker->randomDigit()
+            'status_id' => TaskStatus::factory(),
+            'created_by_id' => User::factory()
         ];
     }
 }

@@ -2,24 +2,23 @@
 
 namespace Tests\Feature;
 
-use App\Models\TaskStatus;
 use App\Models\User;
 use App\Models\Task;
 use Tests\TestCase;
 
 class TaskControllerTest extends TestCase
 {
-    private mixed $user;
-    private mixed $task;
+    private User $user;
+    private Task $task;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create();
-        $status = TaskStatus::factory()->create();
-        $this->task = Task::factory()
-            ->for($this->user, 'createdBy')
-                ->for($status, 'status')->create();
+        $user = User::factory()->create();
+        $this->user = $user;
+        $task = Task::factory()
+            ->for($this->user, 'createdBy')->create();
+        $this->task = $task;
     }
 
     public function testIndex()
