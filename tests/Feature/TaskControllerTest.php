@@ -41,16 +41,22 @@ class TaskControllerTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testStoreLoggedIn()
+    public function testStoreLoggedInValidData()
     {
         $name = $this->faker->lexify();
         $status_id = 1;
-
         $response = $this->actingAs($this->user)->post(route('tasks.store', compact('name', 'status_id')));
         $response->assertRedirect(route('tasks.index'));
         $this->assertDatabaseHas('tasks', ['name' => $name]);
+    }
+
+    public function testStoreLoggedInInvalidData()
+    {
+        $name = $this->faker->lexify();
+        $status_id = 1;
         $response = $this->actingAs($this->user)->post(route('tasks.store', compact('status_id')));
-        $response->assertRedirect(route('tasks.create'));
+        $response->assertRedirect(route('main'));
+        $this->assertDatabaseMissing('tasks', ['name' => $name]);
     }
 
     public function testStoreLoggedOut()
@@ -62,7 +68,7 @@ class TaskControllerTest extends TestCase
         $this->assertDatabaseMissing('tasks', ['name' => $name]);
     }
 
-    public function testUpdateLoggedIn()
+    public function testUpdateLoggedInValidData()
     {
         $params = [
             'name' => $this->faker->lexify(),
@@ -75,16 +81,22 @@ class TaskControllerTest extends TestCase
         $this->assertDatabaseMissing('tasks', ['name' => $this->task->name]);
     }
 
-    public function testUpdateLoggedOut()
+    public function testUpdateLoggedInInvalidData()
     {
         $params = [
             'name' => $this->faker->lexify(),
-            'status_id' => $this->task->id,
             'task' => $this->task
         ];
-        $response = $this->patch(route('tasks.update', $params));
-        $response->assertStatus(403);
+        $response = $this->actingAs($this->user)->patch(route('tasks.update', $params));
+        $response->assertRedirect(route('main'));
         $this->assertDatabaseMissing('tasks', ['name' => $params['name']]);
+        $this->assertDatabaseHas('tasks', ['name' => $this->task->name]);
+    }
+
+    public function testUpdateLoggedOut()
+    {
+        $response = $this->patch(route('tasks.update', ['task' => $this->task]));
+        $response->assertStatus(403);
     }
 
     public function testDestroyLoggedInAsOwner()
@@ -99,13 +111,11 @@ class TaskControllerTest extends TestCase
         $otherUser = User::factory()->create();
         $response = $this->actingAs($otherUser)->delete(route('tasks.destroy', ['task' => $this->task]));
         $response->assertStatus(403);
-        $this->assertDatabaseHas('tasks', ['name' => $this->task->name]);
     }
 
     public function testDestroyLoggedOut()
     {
         $response = $this->delete(route('tasks.destroy', ['task' => $this->task]));
         $response->assertStatus(403);
-        $this->assertDatabaseHas('tasks', ['name' => $this->task->name]);
     }
 }

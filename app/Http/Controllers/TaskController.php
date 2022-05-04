@@ -14,9 +14,14 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 class TaskController extends Controller
 {
+    /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
     public function __construct()
     {
-        $this->authorizeResource(Task::class, 'task');
+        $this->authorizeResource(Task::class);
     }
 
     /**
@@ -47,7 +52,8 @@ class TaskController extends Controller
         $users = User::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
         $statuses = TaskStatus::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
         $labels = Label::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
-        return view('tasks.create', compact('users', 'statuses', 'labels'));
+        $task = new Task();
+        return view('tasks.create', compact('users', 'statuses', 'labels', 'task'));
     }
 
     /**
@@ -58,26 +64,22 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $data = $request->validate([
             'name' => 'required|max:255|unique:tasks',
+            'description' => 'nullable',
             'status_id' => 'required',
+            'assigned_to_id' => 'nullable'
         ], [
             'unique' => __('validation.task.unique')
         ]);
-        if ($validator->fails()) {
-            return redirect()->route('tasks.create')
-                ->withErrors($validator);
-        }
-        $task = new Task();
-        $task->fill($request->all());
-        $task->created_at = now();
-        $task->created_by_id = (int) Auth::id();
+        $task = new Task($data);
+        $task->createdBy()->associate(Auth::id());
         $task->save();
         if ($request->has('labels')) {
             $task->labels()->attach($request->input('labels'));
         }
         flash(__('flash.task.added'))->info();
-        return redirect(route('tasks.index'));
+        return redirect()->route('tasks.index');
     }
 
     /**
@@ -102,7 +104,7 @@ class TaskController extends Controller
         $users = User::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
         $statuses = TaskStatus::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
         $labels = Label::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
-        return view('tasks.edit', compact('users', 'statuses', 'task', 'labels'));
+        return view('tasks.edit', compact('task', 'users', 'statuses', 'labels'));
     }
 
     /**
@@ -114,21 +116,22 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
+        $data = $request->validate([
+            'name' => 'required|max:255|unique:tasks',
+            'description' => 'nullable',
             'status_id' => 'required',
+            'assigned_to_id' => 'nullable'
         ], [
-            'required' => 'Это обязательное поле',
+            'unique' => __('validation.task.unique')
         ]);
-        if ($validator->fails()) {
-            return redirect()->route('tasks.create')
-                ->withErrors($validator);
-        }
-        $task->fill($request->all());
-        $task->updated_at = now();
+        $task->fill($data);
         $task->save();
+        if ($request->has('labels')) {
+            $task->labels()->detach();
+            $task->labels()->attach($request->input('labels'));
+        }
         flash(__('flash.task.edited'))->info();
-        return redirect(route('tasks.index'));
+        return redirect()->route('tasks.index');
     }
 
     /**
@@ -139,8 +142,9 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        $task->labels()->detach();
         $task->delete();
         flash(__('flash.task.removed'))->info();
-        return redirect(route('tasks.index'));
+        return redirect()->route('tasks.index');
     }
 }

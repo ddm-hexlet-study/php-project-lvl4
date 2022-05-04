@@ -70,13 +70,8 @@ class LabelControllerTest extends TestCase
 
     public function testUpdateLoggedOut()
     {
-        $params = [
-            'name' => $this->faker->lexify(),
-            'label' => $this->label
-        ];
-        $response = $this->patch(route('labels.update', $params));
+        $response = $this->patch(route('labels.update', ['label' => $this->label]));
         $response->assertStatus(403);
-        $this->assertDatabaseMissing('labels', ['name' => $params['name']]);
     }
 
     public function testDestroyLoggedIn()

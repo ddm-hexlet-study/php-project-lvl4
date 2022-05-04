@@ -72,13 +72,8 @@ class TaskStatusControllerTest extends TestCase
 
     public function testUpdateLoggedOut()
     {
-        $params = [
-            'name' => $this->faker->lexify(),
-            'task_status' => $this->status
-        ];
-        $response = $this->patch(route('task_statuses.update', $params));
+        $response = $this->patch(route('task_statuses.update', ['task_status' => $this->status]));
         $response->assertStatus(403);
-        $this->assertDatabaseMissing('task_statuses', ['name' => $params['name']]);
     }
 
     public function testDestroyLoggedIn()
@@ -93,6 +88,5 @@ class TaskStatusControllerTest extends TestCase
     {
         $response = $this->delete(route('task_statuses.destroy', ['task_status' => $this->status]));
         $response->assertStatus(403);
-        $this->assertDatabaseHas('task_statuses', ['name' => $this->status->name]);
     }
 }

@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Label;
-use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class LabelController extends Controller
 {
+    /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
     public function __construct()
     {
-        $this->authorizeResource(Label::class, 'label');
+        $this->authorizeResource(Label::class);
     }
 
     /**
@@ -32,7 +36,8 @@ class LabelController extends Controller
      */
     public function create()
     {
-        return view('labels.create');
+        $label = new Label();
+        return view('labels.create', compact('label'));
     }
 
     /**
@@ -43,21 +48,16 @@ class LabelController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $data = $request->validate([
             'name' => 'required|max:255|unique:labels',
+            'description' => 'nullable'
         ], [
             'unique' => __('validation.label.unique')
         ]);
-        if ($validator->fails()) {
-            return redirect()->route('labels.create')
-                ->withErrors($validator);
-        }
-        $label = new Label();
-        $label->fill($request->all());
-        $label->created_at = now();
+        $label = new Label($data);
         $label->save();
         flash(__('flash.label.added'))->info();
-        return redirect(route('labels.index'));
+        return redirect()->route('labels.index');
     }
 
     /**
@@ -80,20 +80,16 @@ class LabelController extends Controller
      */
     public function update(Request $request, Label $label)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
+        $data = $request->validate([
+            'name' => 'required|max:255|unique:labels',
+            'description' => 'nullable'
         ], [
-            'required' => 'Это обязательное поле',
+            'unique' => __('validation.label.unique')
         ]);
-        if ($validator->fails()) {
-            return redirect()->route('labels.create')
-                ->withErrors($validator);
-        }
-        $label->fill($request->all());
-        $label->updated_at = now();
+        $label->fill($data);
         $label->save();
         flash(__('flash.label.edited'))->info();
-        return redirect(route('labels.index'));
+        return redirect()->route('labels.index');
     }
 
     /**
@@ -104,7 +100,6 @@ class LabelController extends Controller
      */
     public function destroy(Label $label)
     {
-
         if ($label->tasks()->first() !== null) {
             flash(__('flash.label.failedRemoved'))->error();
             return redirect()->route('labels.index');

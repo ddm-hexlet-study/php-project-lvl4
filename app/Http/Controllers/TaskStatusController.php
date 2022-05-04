@@ -8,9 +8,14 @@ use Illuminate\Support\Facades\Validator;
 
 class TaskStatusController extends Controller
 {
+    /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
     public function __construct()
     {
-        $this->authorizeResource(TaskStatus::class, 'task_status');
+        $this->authorizeResource(TaskStatus::class);
     }
 
     /**
@@ -20,7 +25,7 @@ class TaskStatusController extends Controller
      */
     public function index()
     {
-        $statuses = \App\Models\TaskStatus::all()->sort();
+        $statuses = TaskStatus::all()->sort();
         return view('task_statuses.index', compact('statuses'));
     }
 
@@ -31,7 +36,8 @@ class TaskStatusController extends Controller
      */
     public function create()
     {
-        return view('task_statuses.create');
+        $task_status = new TaskStatus();
+        return view('task_statuses.create', compact('task_status'));
     }
 
     /**
@@ -42,18 +48,12 @@ class TaskStatusController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $data = $request->validate([
             'name' => 'required|max:255|unique:task_statuses',
         ], [
             'unique' => __('validation.status.unique')
         ]);
-        if ($validator->fails()) {
-            return redirect()->route('task_statuses.create')
-                ->withErrors($validator);
-        }
-        $status = new TaskStatus();
-        $status->name = $request->input('name');
-        $status->created_at = now();
+        $status = new TaskStatus($data);
         $status->save();
         flash(__('flash.status.added'))->info();
         return redirect()->route('task_statuses.index');
@@ -79,7 +79,12 @@ class TaskStatusController extends Controller
      */
     public function update(Request $request, TaskStatus $taskStatus)
     {
-        $taskStatus->name = $request->input('name');
+        $data = $request->validate([
+            'name' => 'required|max:255|unique:task_statuses',
+        ], [
+            'unique' => __('validation.status.unique')
+        ]);
+        $taskStatus->fill($data);
         $taskStatus->save();
         flash(__('flash.status.edited'))->info();
         return redirect()->route('task_statuses.index');
