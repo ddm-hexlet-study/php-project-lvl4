@@ -20,7 +20,7 @@ class TaskStatusControllerTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
         $this->user = $user;
-        /** @var TaskStatus status */
+        /** @var TaskStatus $status */
         $status = TaskStatus::factory()->create();
         $this->status = $status;
     }
