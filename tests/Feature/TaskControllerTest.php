@@ -8,19 +8,17 @@ use Tests\TestCase;
 
 class TaskControllerTest extends TestCase
 {
-    private User $user;
-    private Task $task;
+    private mixed $user;
+    private mixed $task;
 
     protected function setUp(): void
     {
         parent::setUp();
-        /** @var User $user */
-        $user = User::factory()->create();
-        $this->user = $user;
-        /** @var Task $task */
-        $task = Task::factory()
+        $this->user = User::factory()->create();
+        //$this->user = User::find(1);
+        $this->task = Task::factory()
             ->for($this->user, 'createdBy')->create();
-        $this->task = $task;
+        //$this->task = $task;
     }
 
     public function testIndex()
