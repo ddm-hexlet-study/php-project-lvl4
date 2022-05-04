@@ -8,12 +8,13 @@ use Tests\TestCase;
 
 class TaskControllerTest extends TestCase
 {
-    private mixed $user;
+    private User $user;
     private mixed $task;
 
     protected function setUp(): void
     {
         parent::setUp();
+        /** @var User $user */
         $this->user = User::factory()->create();
         //$this->user = User::find(1);
         $this->task = Task::factory()
