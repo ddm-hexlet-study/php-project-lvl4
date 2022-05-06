@@ -7,7 +7,7 @@ install: #установить зависимости
 	mkdir -p database
 	touch database/database.sqlite
 	php artisan migrate --force
-	php artisan db:seed --class=TaskStatusesSeeder
+	php artisan db:seed
 	npm install
 lint: #запуск phpcs
 	composer exec --verbose phpcs -- --standard=./phpcs.xml
