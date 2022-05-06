@@ -1,5 +1,5 @@
 <div class="form-group mb-3">
-    {{ Form::label('name', 'Имя') }}
+    {{ Form::label('name', __('views.labels.name')) }}
     {{ Form::text('name', null, ['class' => 'form-control']) }}
     @error('name')
     <span class="text-danger" role="alert">
@@ -8,6 +8,6 @@
     @enderror
 </div>
 <div class="form-group mb-3">
-    {{ Form::label('description', 'Описание') }}
+    {{ Form::label('description', __('views.labels.description')) }}
     {{ Form::textarea('description', null, ['class' => 'form-control']) }}
 </div>

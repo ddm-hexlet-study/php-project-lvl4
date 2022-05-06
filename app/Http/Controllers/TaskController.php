@@ -37,8 +37,8 @@ class TaskController extends Controller
                 AllowedFilter::exact('assigned_to_id'),
                 AllowedFilter::exact('created_by_id')
             ])->paginate(10);
-        $users = User::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
-        $statuses = TaskStatus::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
+        $users = User::all()->pluck('name')->toArray();
+        $statuses = TaskStatus::all()->pluck('name')->toArray();
         return view('tasks.index', compact('tasks', 'users', 'statuses'));
     }
 
@@ -78,7 +78,7 @@ class TaskController extends Controller
         if ($request->has('labels')) {
             $task->labels()->attach($request->input('labels'));
         }
-        flash(__('flash.task.added'))->info();
+        flash(__('flash.tasks.added'))->info();
         return redirect()->route('tasks.index');
     }
 
@@ -101,9 +101,9 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        $users = User::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
-        $statuses = TaskStatus::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
-        $labels = Label::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
+        $users = User::all()->pluck('name')->toArray();
+        $statuses = TaskStatus::all()->pluck('name')->toArray();
+        $labels = Label::all()->pluck('name')->toArray();
         return view('tasks.edit', compact('task', 'users', 'statuses', 'labels'));
     }
 
@@ -117,12 +117,10 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
         $data = $request->validate([
-            'name' => 'required|max:255|unique:tasks',
+            'name' => 'required|max:255',
             'description' => 'nullable',
             'status_id' => 'required',
             'assigned_to_id' => 'nullable'
-        ], [
-            'unique' => __('validation.task.unique')
         ]);
         $task->fill($data);
         $task->save();
@@ -130,7 +128,7 @@ class TaskController extends Controller
             $task->labels()->detach();
             $task->labels()->attach($request->input('labels'));
         }
-        flash(__('flash.task.edited'))->info();
+        flash(__('flash.tasks.edited'))->info();
         return redirect()->route('tasks.index');
     }
 
@@ -144,7 +142,7 @@ class TaskController extends Controller
     {
         $task->labels()->detach();
         $task->delete();
-        flash(__('flash.task.removed'))->info();
+        flash(__('flash.tasks.removed'))->info();
         return redirect()->route('tasks.index');
     }
 }

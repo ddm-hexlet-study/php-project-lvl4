@@ -1,9 +1,13 @@
 start: #запуск
-	php artisan serve --host 0.0.0.0
+	php artisan serve
 install: #установить зависимости
 	composer install
 	cp -n .env.example .env || true
 	php artisan key:gen --ansi
+	mkdir -p database
+	touch database/database.sqlite
+	php artisan migrate --force
+	npm install
 lint: #запуск phpcs
 	composer exec --verbose phpcs -- --standard=PSR12 app tests
 test: #запуск локального теста

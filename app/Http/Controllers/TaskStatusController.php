@@ -55,7 +55,7 @@ class TaskStatusController extends Controller
         ]);
         $status = new TaskStatus($data);
         $status->save();
-        flash(__('flash.status.added'))->info();
+        flash(__('flash.statuses.added'))->info();
         return redirect()->route('task_statuses.index');
     }
 
@@ -80,13 +80,11 @@ class TaskStatusController extends Controller
     public function update(Request $request, TaskStatus $taskStatus)
     {
         $data = $request->validate([
-            'name' => 'required|max:255|unique:task_statuses',
-        ], [
-            'unique' => __('validation.status.unique')
+            'name' => 'required|max:255',
         ]);
         $taskStatus->fill($data);
         $taskStatus->save();
-        flash(__('flash.status.edited'))->info();
+        flash(__('flash.statuses.edited'))->info();
         return redirect()->route('task_statuses.index');
     }
 
@@ -98,12 +96,12 @@ class TaskStatusController extends Controller
      */
     public function destroy(TaskStatus $taskStatus)
     {
-        if ($taskStatus->tasks()->first() !== null) {
-            flash(__('flash.status.failedRemoved'))->error();
+        if ($taskStatus->tasks()->exists()) {
+            flash(__('flash.statuses.failedRemoved'))->error();
             return redirect()->route('task_statuses.index');
         }
         $taskStatus->delete();
-        flash(__('flash.status.removed'))->info();
+        flash(__('flash.statuses.removed'))->info();
         return redirect()->route('task_statuses.index');
     }
 }

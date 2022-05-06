@@ -56,7 +56,7 @@ class LabelController extends Controller
         ]);
         $label = new Label($data);
         $label->save();
-        flash(__('flash.label.added'))->info();
+        flash(__('flash.labels.added'))->info();
         return redirect()->route('labels.index');
     }
 
@@ -81,14 +81,12 @@ class LabelController extends Controller
     public function update(Request $request, Label $label)
     {
         $data = $request->validate([
-            'name' => 'required|max:255|unique:labels',
+            'name' => 'required|max:255',
             'description' => 'nullable'
-        ], [
-            'unique' => __('validation.label.unique')
         ]);
         $label->fill($data);
         $label->save();
-        flash(__('flash.label.edited'))->info();
+        flash(__('flash.labels.edited'))->info();
         return redirect()->route('labels.index');
     }
 
@@ -101,11 +99,11 @@ class LabelController extends Controller
     public function destroy(Label $label)
     {
         if ($label->tasks()->first() !== null) {
-            flash(__('flash.label.failedRemoved'))->error();
+            flash(__('flash.labels.failedRemoved'))->error();
             return redirect()->route('labels.index');
         }
         $label->delete();
-        flash(__('flash.label.removed'))->info();
+        flash(__('flash.labels.removed'))->info();
         return redirect()->route('labels.index');
     }
 }

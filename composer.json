@@ -14,7 +14,8 @@
         "laravel/ui": "^3.4",
         "laravelcollective/html": "^6.3",
         "rollbar/rollbar-laravel": "^7.2",
-        "spatie/laravel-query-builder": "^5.0"
+        "spatie/laravel-query-builder": "^5.0",
+        "squizlabs/php_codesniffer": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -45,13 +46,21 @@
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@code-sniffer"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "code-sniffer": [
+            "./vendor/bin/phpcs --config-set default_standard ./phpcs.xml",
+            "./vendor/bin/phpcs --config-set colors 1"
+        ],
+        "post-install-cmd": [
+            "@code-sniffer"
         ]
     },
     "extra": {
