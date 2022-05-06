@@ -37,8 +37,8 @@ class TaskController extends Controller
                 AllowedFilter::exact('assigned_to_id'),
                 AllowedFilter::exact('created_by_id')
             ])->paginate(10);
-        $users = User::all()->pluck('name')->toArray();
-        $statuses = TaskStatus::all()->pluck('name')->toArray();
+        $users = User::pluck('name')->toArray();
+        $statuses = TaskStatus::pluck('name')->toArray();
         return view('tasks.index', compact('tasks', 'users', 'statuses'));
     }
 
@@ -49,9 +49,9 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $users = User::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
-        $statuses = TaskStatus::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
-        $labels = Label::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
+        $users = User::pluck('name')->toArray();
+        $statuses = TaskStatus::pluck('name')->toArray();
+        $labels = Label::pluck('name')->toArray();
         $task = new Task();
         return view('tasks.create', compact('users', 'statuses', 'labels', 'task'));
     }
@@ -101,9 +101,9 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        $users = User::all()->pluck('name')->toArray();
-        $statuses = TaskStatus::all()->pluck('name')->toArray();
-        $labels = Label::all()->pluck('name')->toArray();
+        $users = User::pluck('name')->toArray();
+        $statuses = TaskStatus::pluck('name')->toArray();
+        $labels = Label::pluck('name')->toArray();
         return view('tasks.edit', compact('task', 'users', 'statuses', 'labels'));
     }
 
