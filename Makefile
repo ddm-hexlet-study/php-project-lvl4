@@ -9,7 +9,7 @@ install: #установить зависимости
 	php artisan migrate --force
 	npm install
 lint: #запуск phpcs
-	composer exec --verbose phpcs -- --standard=PSR12 app tests
+	composer exec --verbose phpcs -- --standard=./phpcs.xml
 test: #запуск локального теста
 	php artisan test
 test-coverage: #codeclimate

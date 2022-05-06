@@ -5,6 +5,6 @@
     {{ Form::model($label, ['route' => ['labels.update', $label], 'method' => 'patch',  'class' => 'w-50']) }}
     {{ Form::token() }}
     @include('labels.form')
-    {{ Form::submit(__('views.labels.editButton'), ['class' => 'btn btn-primary mt-3']) }}
+    {{ Form::submit(__('views.labels.editeButton'), ['class' => 'btn btn-primary mt-3']) }}
     {{ Form::close() }}
 @endsection
