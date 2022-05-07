@@ -66,7 +66,7 @@ class TaskController extends Controller
         $data = $request->validate([
             'name' => 'required|max:255|unique:tasks',
             'description' => 'nullable',
-            'status_id' => 'required',
+            'status_id' => 'nullable',
             'assigned_to_id' => 'nullable'
         ], [
             'unique' => __('validation.task.unique')
@@ -118,7 +118,7 @@ class TaskController extends Controller
         $data = $request->validate([
             'name' => 'required|max:255',
             'description' => 'nullable',
-            'status_id' => 'required',
+            'status_id' => 'nullable',
             'assigned_to_id' => 'nullable'
         ]);
         $task->fill($data);
