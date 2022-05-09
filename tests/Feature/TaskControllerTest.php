@@ -80,7 +80,7 @@ class TaskControllerTest extends TestCase
         $this->assertDatabaseHas('tasks', ['name' => $params['name']]);
         $this->assertDatabaseMissing('tasks', ['name' => $this->task->name]);
     }
-/*
+
     public function testUpdateLoggedInInvalidData()
     {
         $params = [
@@ -92,7 +92,7 @@ class TaskControllerTest extends TestCase
         $this->assertDatabaseMissing('tasks', ['name' => $params['name']]);
         $this->assertDatabaseHas('tasks', ['name' => $this->task->name]);
     }
-*/
+
     public function testUpdateLoggedOut()
     {
         $response = $this->patch(route('tasks.update', ['task' => $this->task]));
