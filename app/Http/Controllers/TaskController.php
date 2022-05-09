@@ -49,7 +49,7 @@ class TaskController extends Controller
     public function create()
     {
         $users = User::pluck('name')->toArray();
-        $statuses = TaskStatus::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
+        $statuses = TaskStatus::pluck('name', 'id')->toArray();
         $labels = Label::pluck('name')->toArray();
         $task = new Task();
         return view('tasks.create', compact('users', 'statuses', 'labels', 'task'));
@@ -101,7 +101,7 @@ class TaskController extends Controller
     public function edit(Task $task)
     {
         $users = User::pluck('name')->toArray();
-        $statuses = TaskStatus::all()->keyBy('id')->map(fn($item) => $item->name)->toArray();
+        $statuses = TaskStatus::pluck('name', 'id')->toArray();
         $labels = Label::pluck('name')->toArray();
         return view('tasks.edit', compact('task', 'users', 'statuses', 'labels'));
     }
