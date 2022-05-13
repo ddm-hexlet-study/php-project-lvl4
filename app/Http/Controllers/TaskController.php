@@ -36,8 +36,8 @@ class TaskController extends Controller
                 AllowedFilter::exact('assigned_to_id'),
                 AllowedFilter::exact('created_by_id')
             ])->paginate(10);
-        $users = User::pluck('name')->toArray();
-        $statuses = TaskStatus::pluck('name')->toArray();
+        $users = User::pluck('name', 'id')->toArray();
+        $statuses = TaskStatus::pluck('name', 'id')->toArray();
         return view('tasks.index', compact('tasks', 'users', 'statuses'));
     }
 
@@ -48,9 +48,9 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $users = User::pluck('name')->toArray();
+        $users = User::pluck('name', 'id')->toArray();
         $statuses = TaskStatus::pluck('name', 'id')->toArray();
-        $labels = Label::pluck('name')->toArray();
+        $labels = Label::pluck('name', 'id')->toArray();
         $task = new Task();
         return view('tasks.create', compact('users', 'statuses', 'labels', 'task'));
     }
@@ -67,7 +67,7 @@ class TaskController extends Controller
             'name' => 'required|max:255|unique:tasks',
             'description' => 'nullable',
             'status_id' => 'required',
-            'assigned_to_id' => 'nullable'
+            'assigned_to_id' => 'nullable',
         ], [
             'unique' => __('validation.task.unique')
         ]);
@@ -75,7 +75,8 @@ class TaskController extends Controller
         $task->createdBy()->associate(Auth::id());
         $task->save();
         if ($request->has('labels')) {
-            $task->labels()->attach($request->input('labels'));
+            $labels = array_filter($request->input('labels'), fn($item) => $item !== null);
+            $task->labels()->attach($labels);
         }
         flash(__('flash.tasks.added'))->info();
         return redirect()->route('tasks.index');
@@ -100,9 +101,9 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        $users = User::pluck('name')->toArray();
+        $users = User::pluck('name', 'id')->toArray();
         $statuses = TaskStatus::pluck('name', 'id')->toArray();
-        $labels = Label::pluck('name')->toArray();
+        $labels = Label::pluck('name', 'id')->toArray();
         return view('tasks.edit', compact('task', 'users', 'statuses', 'labels'));
     }
 
@@ -125,7 +126,8 @@ class TaskController extends Controller
         $task->save();
         if ($request->has('labels')) {
             $task->labels()->detach();
-            $task->labels()->attach($request->input('labels'));
+            $labels = array_filter($request->input('labels'), fn($item) => $item !== null);
+            $task->labels()->attach($labels);
         }
         flash(__('flash.tasks.edited'))->info();
         return redirect()->route('tasks.index');
