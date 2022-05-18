@@ -15,7 +15,6 @@ class LabelControllerTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
- 
         $this->label = Label::factory()->create();
     }
 
