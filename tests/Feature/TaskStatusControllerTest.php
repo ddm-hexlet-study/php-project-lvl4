@@ -17,9 +17,6 @@ class TaskStatusControllerTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
-        /** @var TaskStatus $status */
-        $status = TaskStatus::factory()->create();
-        $this->status = $status;
     }
     public function testIndex()
     {
@@ -57,30 +54,34 @@ class TaskStatusControllerTest extends TestCase
 
     public function testUpdateLoggedIn()
     {
+        $status = TaskStatus::factory()->create();
         $updatedStatus = TaskStatus::factory()->make()->toArray();
-        $response = $this->actingAs($this->user)->patch(route('task_statuses.update', $this->status), $updatedStatus);
+        $response = $this->actingAs($this->user)->patch(route('task_statuses.update', $status), $updatedStatus);
         $response->assertRedirect(route('task_statuses.index'));
         $this->assertDatabaseHas('task_statuses', $updatedStatus);
-        $this->assertDatabaseMissing('task_statuses', ['name' => $this->status->name]);
+        $this->assertDatabaseMissing('task_statuses', ['name' => $status->name]);
     }
 
     public function testUpdateLoggedOut()
     {
-        $response = $this->patch(route('task_statuses.update', ['task_status' => $this->status]));
+        $status = TaskStatus::factory()->create();
+        $response = $this->patch(route('task_statuses.update', $status));
         $response->assertStatus(403);
     }
 
     public function testDestroyLoggedIn()
     {
+        $status = TaskStatus::factory()->create();
         $response = $this->actingAs($this->user)
-            ->delete(route('task_statuses.destroy', ['task_status' => $this->status]));
+            ->delete(route('task_statuses.destroy', $status));
         $response->assertRedirect(route('task_statuses.index'));
-        $this->assertDatabaseMissing('task_statuses', ['name' => $this->status->name]);
+        $this->assertDatabaseMissing('task_statuses', ['name' => $status->name]);
     }
 
     public function testDestroyLoggedOut()
     {
-        $response = $this->delete(route('task_statuses.destroy', ['task_status' => $this->status]));
+        $status = TaskStatus::factory()->create();
+        $response = $this->delete(route('task_statuses.destroy', $status));
         $response->assertStatus(403);
     }
 }

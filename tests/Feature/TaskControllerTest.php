@@ -9,16 +9,11 @@ use Tests\TestCase;
 class TaskControllerTest extends TestCase
 {
     private User $user;
-    private Task $task;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->user = User::factory()->create();
-        /** @var Task $task */
-        $task = Task::factory()
-            ->for($this->user, 'createdBy')->create();
-        $this->task = $task;
     }
 
     public function testIndex()
@@ -64,45 +59,51 @@ class TaskControllerTest extends TestCase
 
     public function testUpdateLoggedInValidData()
     {
+        $task = Task::factory()->for($this->user, 'createdBy')->create();
         $updatedTask = Task::factory()->for($this->user, 'createdBy')->make()->toArray();
-        $response = $this->actingAs($this->user)->patch(route('tasks.update', $this->task->id), $updatedTask);
+        $response = $this->actingAs($this->user)->patch(route('tasks.update', $task->id), $updatedTask);
         $response->assertRedirect(route('tasks.index'));
         $this->assertDatabaseHas('tasks', $updatedTask);
-        $this->assertDatabaseMissing('tasks', ['name' => $this->task->name]);
+        $this->assertDatabaseMissing('tasks', ['name' => $task->name]);
     }
 
     public function testUpdateLoggedInInvalidData()
     {
+        $task = Task::factory()->for($this->user, 'createdBy')->create();
         $updatedTask = Task::factory()->for($this->user, 'createdBy')->make(['status_id' => null])->toArray();
-        $response = $this->actingAs($this->user)->patch(route('tasks.update', $this->task->id), $updatedTask);
+        $response = $this->actingAs($this->user)->patch(route('tasks.update', $task), $updatedTask);
         $response->assertRedirect(route('main'));
         $this->assertDatabaseMissing('tasks', $updatedTask);
-        $this->assertDatabaseHas('tasks', ['name' => $this->task->name]);
+        $this->assertDatabaseHas('tasks', ['name' => $task->name]);
     }
 
     public function testUpdateLoggedOut()
     {
-        $response = $this->patch(route('tasks.update', ['task' => $this->task]));
+        $task = Task::factory()->for($this->user, 'createdBy')->create();
+        $response = $this->patch(route('tasks.update', $task));
         $response->assertStatus(403);
     }
 
     public function testDestroyLoggedInAsOwner()
     {
-        $response = $this->actingAs($this->user)->delete(route('tasks.destroy', ['task' => $this->task]));
+        $task = Task::factory()->for($this->user, 'createdBy')->create();
+        $response = $this->actingAs($this->user)->delete(route('tasks.destroy', $task));
         $response->assertRedirect(route('tasks.index'));
-        $this->assertDatabaseMissing('tasks', ['name' => $this->task->name]);
+        $this->assertDatabaseMissing('tasks', ['name' => $task->name]);
     }
 
     public function testDestroyLoggedInAsOther()
     {
+        $task = Task::factory()->for($this->user, 'createdBy')->create();
         $otherUser = User::factory()->create();
-        $response = $this->actingAs($otherUser)->delete(route('tasks.destroy', ['task' => $this->task]));
+        $response = $this->actingAs($otherUser)->delete(route('tasks.destroy', $task));
         $response->assertStatus(403);
     }
 
     public function testDestroyLoggedOut()
     {
-        $response = $this->delete(route('tasks.destroy', ['task' => $this->task]));
+        $task = Task::factory()->for($this->user, 'createdBy')->create();
+        $response = $this->delete(route('tasks.destroy', $task));
         $response->assertStatus(403);
     }
 }
