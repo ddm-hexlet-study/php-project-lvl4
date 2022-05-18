@@ -9,7 +9,6 @@ use Tests\TestCase;
 class LabelControllerTest extends TestCase
 {
     private User $user;
-    private Label $label;
 
     protected function setUp(): void
     {
@@ -70,6 +69,7 @@ class LabelControllerTest extends TestCase
 
     public function testDestroyLoggedIn()
     {
+        /** @var Label $label */
         $label = Label::factory()->create();
         $response = $this->actingAs($this->user)->delete(route('labels.destroy', $label));
         $response->assertRedirect(route('labels.index'));
@@ -78,6 +78,7 @@ class LabelControllerTest extends TestCase
 
     public function testDestroyLoggedOut()
     {
+        /** @var Label $label */
         $label = Label::factory()->create();
         $response = $this->delete(route('labels.destroy', $label));
         $response->assertStatus(403);

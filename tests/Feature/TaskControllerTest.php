@@ -61,7 +61,7 @@ class TaskControllerTest extends TestCase
     {
         $task = Task::factory()->for($this->user, 'createdBy')->create();
         $updatedTask = Task::factory()->for($this->user, 'createdBy')->make()->toArray();
-        $response = $this->actingAs($this->user)->patch(route('tasks.update', $task->id), $updatedTask);
+        $response = $this->actingAs($this->user)->patch(route('tasks.update', $task), $updatedTask);
         $response->assertRedirect(route('tasks.index'));
         $this->assertDatabaseHas('tasks', $updatedTask);
         $this->assertDatabaseMissing('tasks', $task->toArray());
@@ -86,6 +86,7 @@ class TaskControllerTest extends TestCase
 
     public function testDestroyLoggedInAsOwner()
     {
+        /** @var Task $task */
         $task = Task::factory()->for($this->user, 'createdBy')->create();
         $response = $this->actingAs($this->user)->delete(route('tasks.destroy', $task));
         $response->assertRedirect(route('tasks.index'));
@@ -94,6 +95,7 @@ class TaskControllerTest extends TestCase
 
     public function testDestroyLoggedInAsOther()
     {
+        /** @var Task $task */
         $task = Task::factory()->for($this->user, 'createdBy')->create();
         $otherUser = User::factory()->create();
         $response = $this->actingAs($otherUser)->delete(route('tasks.destroy', $task));
@@ -103,6 +105,7 @@ class TaskControllerTest extends TestCase
 
     public function testDestroyLoggedOut()
     {
+        /** @var Task $task */
         $task = Task::factory()->for($this->user, 'createdBy')->create();
         $response = $this->delete(route('tasks.destroy', $task));
         $response->assertStatus(403);

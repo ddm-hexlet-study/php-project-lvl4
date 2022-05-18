@@ -11,7 +11,6 @@ use Tests\TestCase;
 class TaskStatusControllerTest extends TestCase
 {
     private User $user;
-    private TaskStatus $status;
 
     protected function setUp(): void
     {
@@ -71,6 +70,7 @@ class TaskStatusControllerTest extends TestCase
 
     public function testDestroyLoggedIn()
     {
+        /** @var TaskStatus $status */
         $status = TaskStatus::factory()->create();
         $response = $this->actingAs($this->user)
             ->delete(route('task_statuses.destroy', $status));
@@ -80,6 +80,7 @@ class TaskStatusControllerTest extends TestCase
 
     public function testDestroyLoggedOut()
     {
+        /** @var TaskStatus $status */
         $status = TaskStatus::factory()->create();
         $response = $this->delete(route('task_statuses.destroy', $status));
         $this->assertModelExists($status);
