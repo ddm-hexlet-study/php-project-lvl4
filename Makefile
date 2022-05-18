@@ -10,7 +10,7 @@ install: #установить зависимости
 	php artisan db:seed
 	npm install
 lint: #запуск phpcs
-	composer exec --verbose phpcs -- --standard=./phpcs.xml
+	composer exec --verbose phpcs
 test: #запуск локального теста
 	php artisan test
 test-coverage: #codeclimate

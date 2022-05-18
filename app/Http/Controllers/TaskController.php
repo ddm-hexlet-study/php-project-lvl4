@@ -36,6 +36,7 @@ class TaskController extends Controller
                 AllowedFilter::exact('assigned_to_id'),
                 AllowedFilter::exact('created_by_id')
             ])->paginate(10);
+        $request->flash();
         $users = User::pluck('name', 'id')->toArray();
         $statuses = TaskStatus::pluck('name', 'id')->toArray();
         return view('tasks.index', compact('tasks', 'users', 'statuses'));

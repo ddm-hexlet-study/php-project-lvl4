@@ -42,24 +42,25 @@ class LabelControllerTest extends TestCase
 
     public function testStoreLoggedIn()
     {
-        $name = $this->faker->lexify();
-        $response = $this->actingAs($this->user)->post(route('labels.store', compact('name')));
+        $label = Label::factory()->make()->toArray();
+        $response = $this->actingAs($this->user)->post(route('labels.store', $label));
         $response->assertRedirect(route('labels.index'));
-        $this->assertDatabaseHas('labels', ['name' => $name]);
+        $this->assertDatabaseHas('labels', $label);
     }
 
     public function testStoreLoggedOut()
     {
-        $name = $this->faker->lexify();
-        $response = $this->post(route('labels.store', compact('name')));
+        $label = Label::factory()->make()->toArray();
+        $response = $this->post(route('labels.store', $label));
         $response->assertStatus(403);
-        $this->assertDatabaseMissing('labels', ['name' => $name]);
+        $this->assertDatabaseMissing('labels', $label);
     }
 
     public function testUpdateLoggedIn()
     {
+        $updatedLabel = Label::factory()->make();
         $params = [
-            'name' => $this->faker->lexify(),
+            'name' => $updatedLabel->name,
             'label' => $this->label
         ];
         $response = $this->actingAs($this->user)->patch(route('labels.update', $params));

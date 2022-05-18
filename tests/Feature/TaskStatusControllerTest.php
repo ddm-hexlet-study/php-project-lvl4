@@ -44,24 +44,25 @@ class TaskStatusControllerTest extends TestCase
 
     public function testStoreLoggedIn()
     {
-        $taskName = $this->faker->lexify();
-        $response = $this->actingAs($this->user)->post(route('task_statuses.store', ['name' => $taskName]));
+        $status = TaskStatus::factory()->make()->toArray();
+        $response = $this->actingAs($this->user)->post(route('task_statuses.store', $status));
         $response->assertRedirect(route('task_statuses.index'));
-        $this->assertDatabaseHas('task_statuses', ['name' => $taskName]);
+        $this->assertDatabaseHas('task_statuses', $status);
     }
 
     public function testStoreLoggedOut()
     {
-        $taskName = $this->faker->lexify();
-        $response = $this->post(route('task_statuses.store', ['name' => $taskName]));
+        $status = TaskStatus::factory()->make()->toArray();
+        $response = $this->post(route('task_statuses.store', $status));
         $response->assertStatus(403);
-        $this->assertDatabaseMissing('task_statuses', ['name' => $taskName]);
+        $this->assertDatabaseMissing('task_statuses', $status);
     }
 
     public function testUpdateLoggedIn()
     {
+        $updatedStatus = TaskStatus::factory()->make();
         $params = [
-            'name' => $this->faker->lexify(),
+            'name' => $updatedStatus->name,
             'task_status' => $this->status
         ];
         $response = $this->actingAs($this->user)->patch(route('task_statuses.update', $params));

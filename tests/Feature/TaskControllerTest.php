@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Task;
+use App\Models\TaskStatus;
 use Tests\TestCase;
 
 class TaskControllerTest extends TestCase
@@ -43,36 +44,33 @@ class TaskControllerTest extends TestCase
 
     public function testStoreLoggedInValidData()
     {
-        $name = $this->faker->lexify();
-        $status_id = 1;
-        $response = $this->actingAs($this->user)->post(route('tasks.store', compact('name', 'status_id')));
+        $task = Task::factory()->for($this->user, 'createdBy')->make()->toArray();
+        $response = $this->actingAs($this->user)->post(route('tasks.store', $task));
         $response->assertRedirect(route('tasks.index'));
-        $this->assertDatabaseHas('tasks', ['name' => $name]);
+        $this->assertDatabaseHas('tasks', $task);
     }
 
     public function testStoreLoggedInInvalidData()
     {
-        $name = $this->faker->lexify();
-        $status_id = 1;
-        $response = $this->actingAs($this->user)->post(route('tasks.store', compact('status_id')));
+        $task = Task::factory()->for($this->user, 'createdBy')->make(['status_id' => null])->toArray();
+        $response = $this->actingAs($this->user)->post(route('tasks.store', $task));
         $response->assertRedirect(route('main'));
-        $this->assertDatabaseMissing('tasks', ['name' => $name]);
     }
 
     public function testStoreLoggedOut()
     {
-        $name = $this->faker->lexify();
-        $status_id = 1;
-        $response = $this->post(route('tasks.store', compact('name', 'status_id')));
+        $task = Task::factory()->for($this->user, 'createdBy')->make()->toArray();
+        $response = $this->post(route('tasks.store', $task));
         $response->assertStatus(403);
-        $this->assertDatabaseMissing('tasks', ['name' => $name]);
+        $this->assertDatabaseMissing('tasks', $task);
     }
 
     public function testUpdateLoggedInValidData()
     {
+        $updatedTask = Task::factory()->make();
         $params = [
-            'name' => $this->faker->lexify(),
-            'status_id' => $this->task->id,
+            'name' => $updatedTask->name,
+            'status_id' => $updatedTask->status_id,
             'task' => $this->task
         ];
         $response = $this->actingAs($this->user)->patch(route('tasks.update', $params));
@@ -83,8 +81,10 @@ class TaskControllerTest extends TestCase
 
     public function testUpdateLoggedInInvalidData()
     {
+        $updatedTask = Task::factory()->make(['status_id' => null]);
         $params = [
-            'name' => $this->faker->lexify(),
+            'name' => $updatedTask->name,
+            'status_id' => $updatedTask->status_id,
             'task' => $this->task
         ];
         $response = $this->actingAs($this->user)->patch(route('tasks.update', $params));
