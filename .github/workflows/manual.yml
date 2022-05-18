@@ -21,6 +21,6 @@ jobs:
           env:
             CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_PROJECT4 }}
           with:
-            coverageCommand: make test-coverage
+            coverageCommand: make test
             coverageLocations: ${{github.workplace}}/build/logs/clover.xml:clover
             debug: true
