@@ -14,10 +14,11 @@ class TaskControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $task = Task::factory()->create();
+        $this->user = User::factory()->create();
+        /** @var Task $task */
+        $task = Task::factory()
+            ->for($this->user, 'createdBy')->create();
         $this->task = $task;
-        $this->user = $task->createdBy;
     }
 
     public function testIndex()
