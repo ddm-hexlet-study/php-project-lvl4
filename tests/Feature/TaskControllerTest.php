@@ -102,5 +102,4 @@ class TaskControllerTest extends TestCase
         $response = $this->delete(route('tasks.destroy', ['task' => $this->task]));
         $response->assertStatus(403);
     }
-
 }
