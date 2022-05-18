@@ -58,14 +58,10 @@ class LabelControllerTest extends TestCase
 
     public function testUpdateLoggedIn()
     {
-        $updatedLabel = Label::factory()->make();
-        $params = [
-            'name' => $updatedLabel->name,
-            'label' => $this->label
-        ];
-        $response = $this->actingAs($this->user)->patch(route('labels.update', $params));
+        $updatedLabel = Label::factory()->make()->toArray();
+        $response = $this->actingAs($this->user)->patch(route('labels.update', $this->label->id), $updatedLabel);
         $response->assertRedirect(route('labels.index'));
-        $this->assertDatabaseHas('labels', ['name' => $params['name']]);
+        $this->assertDatabaseHas('labels', $updatedLabel);
         $this->assertDatabaseMissing('labels', ['name' => $this->label->name]);
     }
 

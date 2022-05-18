@@ -60,14 +60,10 @@ class TaskStatusControllerTest extends TestCase
 
     public function testUpdateLoggedIn()
     {
-        $updatedStatus = TaskStatus::factory()->make();
-        $params = [
-            'name' => $updatedStatus->name,
-            'task_status' => $this->status
-        ];
-        $response = $this->actingAs($this->user)->patch(route('task_statuses.update', $params));
+        $updatedStatus = TaskStatus::factory()->make()->toArray();
+        $response = $this->actingAs($this->user)->patch(route('task_statuses.update', $this->status), $updatedStatus);
         $response->assertRedirect(route('task_statuses.index'));
-        $this->assertDatabaseHas('task_statuses', ['name' => $params['name']]);
+        $this->assertDatabaseHas('task_statuses', $updatedStatus);
         $this->assertDatabaseMissing('task_statuses', ['name' => $this->status->name]);
     }
 

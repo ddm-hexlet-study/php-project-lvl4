@@ -67,29 +67,19 @@ class TaskControllerTest extends TestCase
 
     public function testUpdateLoggedInValidData()
     {
-        $updatedTask = Task::factory()->make();
-        $params = [
-            'name' => $updatedTask->name,
-            'status_id' => $updatedTask->status_id,
-            'task' => $this->task
-        ];
-        $response = $this->actingAs($this->user)->patch(route('tasks.update', $params));
+        $updatedTask = Task::factory()->for($this->user, 'createdBy')->make()->toArray();
+        $response = $this->actingAs($this->user)->patch(route('tasks.update', $this->task->id), $updatedTask);
         $response->assertRedirect(route('tasks.index'));
-        $this->assertDatabaseHas('tasks', ['name' => $params['name']]);
+        $this->assertDatabaseHas('tasks', $updatedTask);
         $this->assertDatabaseMissing('tasks', ['name' => $this->task->name]);
     }
 
     public function testUpdateLoggedInInvalidData()
     {
-        $updatedTask = Task::factory()->make(['status_id' => null]);
-        $params = [
-            'name' => $updatedTask->name,
-            'status_id' => $updatedTask->status_id,
-            'task' => $this->task
-        ];
-        $response = $this->actingAs($this->user)->patch(route('tasks.update', $params));
+        $updatedTask = Task::factory()->for($this->user, 'createdBy')->make(['status_id' => null])->toArray();
+        $response = $this->actingAs($this->user)->patch(route('tasks.update', $this->task->id), $updatedTask);
         $response->assertRedirect(route('main'));
-        $this->assertDatabaseMissing('tasks', ['name' => $params['name']]);
+        $this->assertDatabaseMissing('tasks', $updatedTask);
         $this->assertDatabaseHas('tasks', ['name' => $this->task->name]);
     }
 
