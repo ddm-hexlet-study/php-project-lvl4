@@ -16,10 +16,7 @@ class TaskStatusControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        /** @var User $user */
-        $user = User::factory()->create();
-        $this->user = $user;
+        $this->user = User::factory()->create();
         /** @var TaskStatus $status */
         $status = TaskStatus::factory()->create();
         $this->status = $status;

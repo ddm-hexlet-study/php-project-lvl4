@@ -14,12 +14,9 @@ class LabelControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        /** @var User $user */
-        $user = User::factory()->create();
-        $this->user = $user;
-        /** @var Label $label */
-        $label = Label::factory()->create();
-        $this->label = $label;
+        $this->user = User::factory()->create();
+ 
+        $this->label = Label::factory()->create();
     }
 
     public function testIndex()

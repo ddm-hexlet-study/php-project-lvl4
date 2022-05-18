@@ -15,9 +15,7 @@ class TaskControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        /** @var User $user */
         $this->user = User::factory()->create();
-        //$this->user = $user;
         /** @var Task $task */
         $task = Task::factory()
             ->for($this->user, 'createdBy')->create();
