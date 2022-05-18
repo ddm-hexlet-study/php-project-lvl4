@@ -58,7 +58,7 @@ class LabelControllerTest extends TestCase
         $response = $this->actingAs($this->user)->patch(route('labels.update', $label), $updatedLabel);
         $response->assertRedirect(route('labels.index'));
         $this->assertDatabaseHas('labels', $updatedLabel);
-        $this->assertDatabaseMissing('labels', ['name' => $label->name]);
+        $this->assertDatabaseMissing('labels', $label->toArray());
     }
 
     public function testUpdateLoggedOut()
@@ -73,7 +73,7 @@ class LabelControllerTest extends TestCase
         $label = Label::factory()->create();
         $response = $this->actingAs($this->user)->delete(route('labels.destroy', $label));
         $response->assertRedirect(route('labels.index'));
-        $this->assertDatabaseMissing('labels', ['name' => $label->name]);
+        $this->assertModelMissing($label);
     }
 
     public function testDestroyLoggedOut()
@@ -81,6 +81,6 @@ class LabelControllerTest extends TestCase
         $label = Label::factory()->create();
         $response = $this->delete(route('labels.destroy', $label));
         $response->assertStatus(403);
-        $this->assertDatabaseHas('labels', ['name' => $label->name]);
+        $this->assertModelExists($label);
     }
 }

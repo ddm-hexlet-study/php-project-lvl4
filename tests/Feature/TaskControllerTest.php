@@ -64,7 +64,7 @@ class TaskControllerTest extends TestCase
         $response = $this->actingAs($this->user)->patch(route('tasks.update', $task->id), $updatedTask);
         $response->assertRedirect(route('tasks.index'));
         $this->assertDatabaseHas('tasks', $updatedTask);
-        $this->assertDatabaseMissing('tasks', ['name' => $task->name]);
+        $this->assertDatabaseMissing('tasks', $task->toArray());
     }
 
     public function testUpdateLoggedInInvalidData()
@@ -74,7 +74,7 @@ class TaskControllerTest extends TestCase
         $response = $this->actingAs($this->user)->patch(route('tasks.update', $task), $updatedTask);
         $response->assertRedirect(route('main'));
         $this->assertDatabaseMissing('tasks', $updatedTask);
-        $this->assertDatabaseHas('tasks', ['name' => $task->name]);
+        $this->assertModelExists($task);
     }
 
     public function testUpdateLoggedOut()
@@ -89,7 +89,7 @@ class TaskControllerTest extends TestCase
         $task = Task::factory()->for($this->user, 'createdBy')->create();
         $response = $this->actingAs($this->user)->delete(route('tasks.destroy', $task));
         $response->assertRedirect(route('tasks.index'));
-        $this->assertDatabaseMissing('tasks', ['name' => $task->name]);
+        $this->assertModelMissing($task);
     }
 
     public function testDestroyLoggedInAsOther()
@@ -98,6 +98,7 @@ class TaskControllerTest extends TestCase
         $otherUser = User::factory()->create();
         $response = $this->actingAs($otherUser)->delete(route('tasks.destroy', $task));
         $response->assertStatus(403);
+        $this->assertModelExists($task);
     }
 
     public function testDestroyLoggedOut()
@@ -105,5 +106,6 @@ class TaskControllerTest extends TestCase
         $task = Task::factory()->for($this->user, 'createdBy')->create();
         $response = $this->delete(route('tasks.destroy', $task));
         $response->assertStatus(403);
+        $this->assertModelExists($task);
     }
 }

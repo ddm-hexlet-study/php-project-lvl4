@@ -59,7 +59,7 @@ class TaskStatusControllerTest extends TestCase
         $response = $this->actingAs($this->user)->patch(route('task_statuses.update', $status), $updatedStatus);
         $response->assertRedirect(route('task_statuses.index'));
         $this->assertDatabaseHas('task_statuses', $updatedStatus);
-        $this->assertDatabaseMissing('task_statuses', ['name' => $status->name]);
+        $this->assertDatabaseMissing('task_statuses', $status->toArray());
     }
 
     public function testUpdateLoggedOut()
@@ -75,13 +75,14 @@ class TaskStatusControllerTest extends TestCase
         $response = $this->actingAs($this->user)
             ->delete(route('task_statuses.destroy', $status));
         $response->assertRedirect(route('task_statuses.index'));
-        $this->assertDatabaseMissing('task_statuses', ['name' => $status->name]);
+        $this->assertModelMissing($status);
     }
 
     public function testDestroyLoggedOut()
     {
         $status = TaskStatus::factory()->create();
         $response = $this->delete(route('task_statuses.destroy', $status));
+        $this->assertModelExists($status);
         $response->assertStatus(403);
     }
 }

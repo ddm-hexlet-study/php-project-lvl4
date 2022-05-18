@@ -18,7 +18,7 @@ class LabelFactory extends Factory
     {
         return [
             'name' => $this->faker->lexify(),
-            'description' => $this->faker->lexify()
+            'description' => $this->faker->lexify(),
         ];
     }
 }
