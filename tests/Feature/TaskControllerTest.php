@@ -69,6 +69,7 @@ class TaskControllerTest extends TestCase
 
     public function testUpdateLoggedInInvalidData()
     {
+        /** @var Task $task */
         $task = Task::factory()->for($this->user, 'createdBy')->create();
         $updatedTask = Task::factory()->for($this->user, 'createdBy')->make(['status_id' => null])->toArray();
         $response = $this->actingAs($this->user)->patch(route('tasks.update', $task), $updatedTask);
