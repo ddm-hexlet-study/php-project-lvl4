@@ -7,13 +7,13 @@
         <div>
             <div class="row g-1">
                 <div class="col">
-                    {{ Form::select('filter[status_id]', $statuses, old('filter[status_id]'), ['placeholder' => __('views.tasks.status'), 'class' => 'form-control']) }}
+                    {{ Form::select('filter[status_id]', $statuses, $filter['status_id'] ?? '', ['placeholder' => __('views.tasks.status'), 'class' => 'form-control']) }}
                 </div>
                 <div class="col">
-                    {{ Form::select('filter[created_by_id]', $users, old('filter[created_by_id]'), ['placeholder' => __('views.tasks.author'), 'class' => 'form-control']) }}
+                    {{ Form::select('filter[created_by_id]', $users, $filter['created_by_id'] ?? '', ['placeholder' => __('views.tasks.author'), 'class' => 'form-control']) }}
                 </div>
                 <div class="col">
-                    {{ Form::select('filter[assigned_to_id]', $users, old('filter[assigned_to_id]'), ['placeholder' => __('views.tasks.executor'), 'class' => 'form-control']) }}
+                    {{ Form::select('filter[assigned_to_id]', $users, $filter['assigned_to_id'] ?? '', ['placeholder' => __('views.tasks.executor'), 'class' => 'form-control']) }}
                 </div>
                 <div class="col">
                     {{ Form::submit(__('views.tasks.applyButton'), ['class' => 'btn btn-outline-primary me-2']) }}

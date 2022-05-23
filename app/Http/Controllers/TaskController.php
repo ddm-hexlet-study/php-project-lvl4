@@ -36,10 +36,10 @@ class TaskController extends Controller
                 AllowedFilter::exact('assigned_to_id'),
                 AllowedFilter::exact('created_by_id')
             ])->paginate(10);
-        $request->flash();
+        $filter = $request->input('filter');
         $users = User::pluck('name', 'id')->toArray();
         $statuses = TaskStatus::pluck('name', 'id')->toArray();
-        return view('tasks.index', compact('tasks', 'users', 'statuses'));
+        return view('tasks.index', compact('tasks', 'users', 'statuses', 'filter'));
     }
 
     /**
@@ -126,9 +126,8 @@ class TaskController extends Controller
         $task->fill($data);
         $task->save();
         if ($request->has('labels')) {
-            $task->labels()->detach();
             $labels = array_filter($request->input('labels'), fn($item) => $item !== null);
-            $task->labels()->attach($labels);
+            $task->labels()->sync($labels);
         }
         flash(__('flash.tasks.edited'))->info();
         return redirect()->route('tasks.index');

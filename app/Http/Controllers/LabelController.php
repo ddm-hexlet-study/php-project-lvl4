@@ -97,7 +97,7 @@ class LabelController extends Controller
      */
     public function destroy(Label $label)
     {
-        if ($label->tasks()->first() !== null) {
+        if ($label->tasks()->exists()) {
             flash(__('flash.labels.failedRemoved'))->error();
             return redirect()->route('labels.index');
         }
