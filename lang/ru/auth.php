@@ -26,4 +26,5 @@ return [
     'rememberMe' => 'Запомнить меня',
     'forgotPassword' => 'Забыли пароль?',
     'submitLogin' => 'Войти',
+    
 ];
