@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="csrf-param" content="_token" />
-    <title>Менеджер задач</title>
+    <title>{{__('views.title')}}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -34,13 +34,13 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link " href="{{ route('tasks.index') }}">Задачи</a>
+                            <a class="nav-link " href="{{ route('tasks.index') }}">{{ __('views.tasks.indexTitle') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="{{ route('task_statuses.index') }}">Статусы</a>
+                            <a class="nav-link " href="{{ route('task_statuses.index') }}">{{ __('views.statuses.indexTitle') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="{{ route('labels.index') }}">Метки</a>
+                            <a class="nav-link " href="{{ route('labels.index') }}">{{ __('views.labels.indexTitle') }}</a>
                         </li>
                     </ul>
 

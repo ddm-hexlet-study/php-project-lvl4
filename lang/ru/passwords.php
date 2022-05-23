@@ -24,4 +24,11 @@ return [
     'Login' => 'Вход',
     'Password' => 'Пароль',
     'Remember me' => 'Запомнить меня',
+    'Forgot password' => 'Забыли пароль?',
+    'Confirm password' => 'Подтвердить пароль',
+    'A fresh verification link has been sent to your email address.' => 'Ссылка с подтверждением была отправлена на ваш email.',
+    'Before proceeding, please check your email for a verification link.' => 'Прежде чем продолжить, проверьте ссыку с подтверждением.',
+    'If you did not receive the email' => 'Письмо не пришло.',
+    'click here to request another' => 'Нажмите, чтобы отправить снова.'
+
 ];

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'title' => 'Менеджер задач',
     'labels' => [
         'createTitle' => 'Создать метку',
         'createButton' => 'Создать',
