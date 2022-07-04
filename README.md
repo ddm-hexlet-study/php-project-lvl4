@@ -6,4 +6,4 @@
 ## Task manager
 Task management system similar to http://www.redmine.org/. It allows you to set tasks, assign performers and change their statuses. Registration and authentication are required to work with the system.
 ## Heroku deploy
-https://floating-lowlands-65230.herokuapp.com/
+https://task-manager-ddm14159.herokuapp.com/
